@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hobbes Circle: Moderator Agent</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #111111;
+  --panel: #1A1A1A;
+  --text-main: #EAEAEA;
+  --text-dim: #888888;
+  --head-yarn: #4A90E2; 
+  --heart-yarn: #E24A4A; 
+  --hand-yarn: #F5A623; 
+  --caller: #FFFFFF;    
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg); color: var(--text-main);
+  font-family: 'Spectral', Georgia, serif; font-size: 18px; line-height: 1.6;
+  min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.mono { font-family: 'IBM Plex Mono', monospace; text-transform: uppercase; letter-spacing: 1px; }
+
+#wallScreen { width: 100%; max-width: 900px; padding: 40px; text-align: center; margin-top: 60px; }
+
+.stitch-bar { display: flex; justify-content: space-between; border-bottom: 1px solid #333; padding-bottom: 20px; margin-bottom: 80px; }
+.stitch { color: var(--text-dim); font-size: 15px; opacity: 0.4; transition: all 0.3s ease; }
+.stitch.active { opacity: 1; color: var(--caller); font-weight: 600; text-shadow: 0 0 12px rgba(255,255,255,0.3); transform: scale(1.05); }
+
+/* The Active Phase Display */
+.phase-card { 
+  background: var(--panel); border-radius: 16px; padding: 50px 50px 60px; 
+  border-top: 6px solid var(--caller); min-height: 360px; 
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+  position: relative;
+}
+.phase-card.head-active { border-color: var(--head-yarn); box-shadow: 0 20px 50px rgba(74, 144, 226, 0.15); }
+.phase-card.heart-active { border-color: var(--heart-yarn); box-shadow: 0 20px 50px rgba(226, 74, 74, 0.15); }
+.phase-card.hand-active { border-color: var(--hand-yarn); box-shadow: 0 20px 50px rgba(245, 166, 35, 0.15); }
+
+/* The Hobbes Avatar Stage */
+.avatar-stage {
+  width: 180px; height: 180px; border-radius: 50%;
+  margin-top: -140px; margin-bottom: 20px;
+  border: 6px solid var(--caller);
+  background-color: #222;
+  background-size: cover; background-position: center;
+  transition: border-color 0.4s ease, background-image 0.5s ease-in-out;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.8);
+  /* Default placeholder text if images are missing */
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #555;
+}
+
+h1 { font-size: 42px; font-weight: 600; margin-bottom: 15px; letter-spacing: -0.5px; line-height: 1.1; }
+.instruction { font-size: 26px; color: var(--text-dim); font-style: italic; max-width: 85%; margin: 0 auto; }
+
+.btn {
+  background: #2A2A2A; color: #FFF; border: 1px solid #444; padding: 18px 40px; 
+  font-family: 'IBM Plex Mono', monospace; font-size: 16px; font-weight: 600; 
+  border-radius: 8px; cursor: pointer; margin-top: 40px; transition: all 0.2s;
+}
+.btn:hover { background: #3A3A3A; border-color: #666; }
+.btn:active { transform: scale(0.98); }
+
+#roleIndicator { font-size: 15px; margin-bottom: 12px; font-weight: 600; letter-spacing: 2px; }
+</style>
+</head>
+<body>
+
+<div id="wallScreen">
+  <div class="mono" style="margin-bottom: 40px; color: var(--text-dim); font-size: 14px;">Hobbes Circle · Cinema Selfie Engine</div>
+  
+  <div class="stitch-bar" id="stitchBar">
+    <div class="stitch mono active" id="st-co">CO (Cast On)</div>
+    <div class="stitch mono" id="st-k1">K1 (Knit)</div>
+    <div class="stitch mono" id="st-yo">YO (Yarn Over)</div>
+    <div class="stitch mono" id="st-p1">P1* (Purl)</div>
+    <div class="stitch mono" id="st-sl">SL (Slip)</div>
+    <div class="stitch mono" id="st-tbl">TBL (Cont.)</div>
+  </div>
+
+  <div class="phase-card" id="phaseCard">
+    <!-- The Avatar Graphic -->
+    <div class="avatar-stage" id="avatarBox" style="background-image: url('hobbes-director.jpg');">
+      [H]
+    </div>
+
+    <div class="mono" id="roleIndicator" style="color: var(--caller);">SESSION OPENING</div>
+    <h1 id="phaseTitle">The Anchor Brief</h1>
+    <p class="instruction" id="phaseInstruction">"Hobbes voices the brief. The day, the beats, the emotional arc. Hands off the glass."</p>
+    <div><button class="btn" id="nextBtn" onclick="nextPhase()">Proceed to K1 (Story Architect)</button></div>
+  </div>
+</div>
+
+<script>
+const phases = [
+  { 
+    id: 'st-co', type: 'caller', roleText: 'SESSION OPENING', 
+    title: 'The Anchor Brief', 
+    inst: '"Hobbes voices the brief. The day, the beats, the emotional arc. Hands off the glass."',
+    btnText: 'Proceed to K1 (Story Architect)',
+    avatar: 'hobbes-director.jpg'
+  },
+  { 
+    id: 'st-k1', type: 'head-active', roleText: 'STORY ARCHITECT (HEAD)', 
+    title: 'The Intention', 
+    inst: '"Speak the emotional truth of the beat aloud. One sentence. The yarn comes from the Head."',
+    btnText: 'Pass to YO (Moderator/Eye)',
+    avatar: 'hobbes-head.jpg'
+  },
+  { 
+    id: 'st-yo', type: 'caller', roleText: 'THE GAP (EYE/MODERATOR)', 
+    title: 'The Pipeline Runs', 
+    inst: '"Generators working. Eye waits. Hobbes asks: What should this feel like coming out of the previous beat?"',
+    btnText: 'Clip Ready: Proceed to P1 (Heart Keeper)',
+    avatar: 'hobbes-director.jpg'
+  },
+  { 
+    id: 'st-p1', type: 'heart-active', roleText: 'HEART KEEPER (HEART)', 
+    title: 'The Pivot: Watch & Judge', 
+    inst: '"The clip arrives. Five seconds of silence. Does it carry the beat? Thumbs up or unknit."',
+    btnText: 'Approved: Pass to SL (Craft Hand)',
+    avatar: 'hobbes-heart.jpg'
+  },
+  { 
+    id: 'st-sl', type: 'hand-active', roleText: 'CRAFT HAND (HAND)', 
+    title: 'The Slipped Stitch', 
+    inst: '"Approved. Hand saves frame to chain. Heart drops clip into CapCut Space. Lock to music."',
+    btnText: 'Lock Timeline: Proceed to TBL',
+    avatar: 'hobbes-hand.jpg'
+  },
+  { 
+    id: 'st-tbl', type: 'caller', roleText: 'CONTINUITY (MODERATOR)', 
+    title: 'Continuity Check', 
+    inst: '"Same earth. Same light. Read continuity note aloud before the next beat begins."',
+    btnText: 'Loop Pattern: Start Next Beat (K1)',
+    avatar: 'hobbes-director.jpg'
+  }
+];
+
+let currentPhase = 0;
+
+function nextPhase() {
+  currentPhase++;
+  if (currentPhase >= phases.length) currentPhase = 1; 
+  
+  const phase = phases[currentPhase];
+  
+  document.querySelectorAll('.stitch').forEach(el => el.classList.remove('active'));
+  document.getElementById(phase.id).classList.add('active');
+  
+  const card = document.getElementById('phaseCard');
+  card.className = 'phase-card ' + phase.type;
+  
+  const roleColor = 
+    phase.type === 'head-active' ? 'var(--head-yarn)' : 
+    phase.type === 'heart-active' ? 'var(--heart-yarn)' : 
+    phase.type === 'hand-active' ? 'var(--hand-yarn)' : 'var(--caller)';
+    
+  document.getElementById('roleIndicator').textContent = phase.roleText;
+  document.getElementById('roleIndicator').style.color = roleColor;
+  
+  document.getElementById('phaseTitle').textContent = phase.title;
+  document.getElementById('phaseInstruction').textContent = phase.inst;
+  
+  document.getElementById('nextBtn').textContent = phase.btnText;
+
+  // Update Avatar and its border color
+  const avatarBox = document.getElementById('avatarBox');
+  avatarBox.style.backgroundImage = `url('${phase.avatar}')`;
+  avatarBox.style.borderColor = roleColor;
+}
+</script>
+</body>
+</html>
