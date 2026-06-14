@@ -131,24 +131,7 @@ h1 { font-size: 32px; font-weight: 600; margin-bottom: 10px; line-height: 1.2; }
   <div id="surveyBody" style="display:none">
     
     <!-- Pass 1: Flow of Attention -->
-    <div class="panel" id="panel-foa">
-      <div class="qnum">Pass 1 of 3 · Flow of Attention</div>
-      <div class="q">Tap every frame you explicitly remember.</div>
-      <div class="hint">Trust your gut. Some of these are decoys.</div>
-      
-      <div class="grid">
-        <!-- Placeholder cells for UI demonstration -->
-        <div class="cell" onclick="this.classList.toggle('sel')"><div style="color:#555; text-align:center; padding-top:25%;">[Frame 1]</div></div>
-        <div class="cell" onclick="this.classList.toggle('sel')"><div style="color:#555; text-align:center; padding-top:25%;">[Frame 2]</div></div>
-        <div class="cell" onclick="this.classList.toggle('sel')"><div style="color:#555; text-align:center; padding-top:25%;">[Decoy A]</div></div>
-        <div class="cell" onclick="this.classList.toggle('sel')"><div style="color:#555; text-align:center; padding-top:25%;">[Frame 3]</div></div>
-        <div class="cell" onclick="this.classList.toggle('sel')"><div style="color:#555; text-align:center; padding-top:25%;">[Frame 5]</
-div></div>
-        <div class="cell" onclick="this.classList.toggle('sel')"><div style="color:#555; text-align:center; padding-top:25%;">[Frame 4]</div></div>
-      </div>
-      
-      <button class="btn" onclick="nextPanel('panel-foa', 'panel-outro')">SUBMIT SORT</button>
-    </div>
+    <<div id="panel-foa" class="panel"><div class="brand-header"><img src="hobbes-logo.png" alt="Hobbes Studio" style="height:60px; margin-bottom:15px;"><div style="color:var(--gold-main); font-size:11px; letter-spacing:2px; text-transform:uppercase; font-family:var(--font-mono); margin-bottom:20px;">Hobbes Studio Measurement</div></div><div class="wrap"><div style="color:var(--gold-main); font-size:11px; letter-spacing:1px; text-transform:uppercase; font-family:var(--font-mono); margin-bottom:8px;">Pass 1 of 3 · Flow of Attention</div><h2 style="margin-top:0; font-size:24px; margin-bottom:8px; font-weight:600;">Tap every frame you explicitly remember.</h2><p style="margin:0 0 24px 0; font-style:italic; color:var(--text-dim); font-size:15px;">Trust your gut. Some of these are decoys.</p><div class="grid"><div class="cell" onclick="this.classList.toggle('sel')">[Frame 1]</div><div class="cell" onclick="this.classList.toggle('sel')">[Frame 2]</div><div class="cell" onclick="this.classList.toggle('sel')">[Frame 3]</div><div class="cell" onclick="this.classList.toggle('sel')">[Frame 4]</div><div class="cell" onclick="this.classList.toggle('sel')">[Decoy A]</div><div class="cell" onclick="this.classList.toggle('sel')">[Frame 5]</div><div class="cell" onclick="this.classList.toggle('sel')">[Frame 6]</div><div class="cell" onclick="this.classList.toggle('sel')">[Frame 7]</div><div class="cell" onclick="this.classList.toggle('sel')">[Frame 8]</div></div><button class="btn" onclick="nextPanel('panel-foa', 'panel-outro')">Submit Sort</button></div></div>
 
     <!-- Outro Gate -->
     <div class="panel" id="panel-outro">
